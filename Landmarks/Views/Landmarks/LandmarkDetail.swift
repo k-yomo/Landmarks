@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct LandmarkDetail: View {
+    @EnvironmentObject var modalData: ModalData
     var landmark: Landmark
+    
+    var landmarkIndex: Int {
+        modalData.landmarks.firstIndex(where: { $0.id == landmark.id})!
+    }
     
     var body: some View {
         ScrollView {
@@ -19,9 +24,12 @@ struct LandmarkDetail: View {
                 .offset(y: -130)
                 .padding(.bottom, -130)
             VStack(alignment: .leading) {
-                Text(landmark.name)
-                    .font(.title)
-                    .foregroundColor(.black)
+                HStack {
+                    Text(landmark.name)
+                        .font(.title)
+                        .foregroundColor(.black)
+                    FavoriteButton(isSet: $modalData.landmarks[landmarkIndex].isFavorite)
+                }
                 HStack {
                     Text(landmark.park)
                         .font(.subheadline)
@@ -46,7 +54,10 @@ struct LandmarkDetail: View {
 }
 
 struct LandmarkDetail_Previews: PreviewProvider {
+    static let modalData = ModalData()
+    
     static var previews: some View {
-        LandmarkDetail(landmark: ModalData().landmarks[0])
+        LandmarkDetail(landmark: modalData.landmarks[0])
+            .environmentObject(modalData)
     }
 }
